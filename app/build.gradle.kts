@@ -33,10 +33,19 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    // Exclude duplicate META-INF entries to resolve conflicts
+    packagingOptions {
+        resources {
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/io.netty.versions.properties"
+        }
+    }
 }
 
 dependencies {
-
+    implementation(libs.hivemq.mqtt.client)
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
