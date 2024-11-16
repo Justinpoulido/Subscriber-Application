@@ -2,6 +2,7 @@ package com.example.subscriberapplication
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -17,7 +18,7 @@ import java.nio.charset.StandardCharsets
 import java.util.UUID
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
-
+    private lateinit var studentIdTextView: TextView
     private lateinit var mMap: GoogleMap
     private var mqttClient: Mqtt5AsyncClient? = null
     private val pointsList = mutableListOf<LatLng>()
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        studentIdTextView = findViewById(R.id.studentIdText)
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -72,12 +73,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             ?.send()
     }
-
     private fun handleReceivedLocation(message: String) {
-        // Parse the message assuming it follows the format sent by Publisher:
-        // "Student ID: <ID> | Speed: <speed> km/h | Timestamp: <timestamp> | Location: <latitude>, <longitude>"
         try {
             val parts = message.split(" | ")
+            val studentIdPart = parts.firstOrNull { it.startsWith("Student ID:") }?.removePrefix("Student ID: ")
+            val speedPart = parts.firstOrNull { it.startsWith("Speed:") }?.removePrefix("Speed: ")
             val locationPart = parts.lastOrNull { it.startsWith("Location:") }?.removePrefix("Location: ")
             val coordinates = locationPart?.split(", ") ?: return
 
@@ -85,7 +85,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             val longitude = coordinates[1].toDouble()
             val location = LatLng(latitude, longitude)
 
+            // Update Student ID and Speed in the TextView
             runOnUiThread {
+                studentIdTextView.text = "Student ID: $studentIdPart | Speed: $speedPart"
                 addMarkerAndPath(location)
             }
         } catch (e: Exception) {
@@ -93,6 +95,29 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    /*
+    private fun handleReceivedLocation(message: String) {
+        try {
+            val parts = message.split(" | ")
+            val studentIdPart = parts.firstOrNull { it.startsWith("Student ID:") }?.removePrefix("Student ID: ")
+            val locationPart = parts.lastOrNull { it.startsWith("Location:") }?.removePrefix("Location: ")
+            val coordinates = locationPart?.split(", ") ?: return
+
+            val latitude = coordinates[0].toDouble()
+            val longitude = coordinates[1].toDouble()
+            val location = LatLng(latitude, longitude)
+
+            // Update Student ID in the TextView
+            runOnUiThread {
+                studentIdTextView.text = "Student ID: $studentIdPart"
+                addMarkerAndPath(location)
+            }
+        } catch (e: Exception) {
+            Log.e("SubscriberApp", "Failed to parse location message", e)
+        }
+    }
+
+    */
     private fun addMarkerAndPath(location: LatLng) {
         pointsList.add(location)
 

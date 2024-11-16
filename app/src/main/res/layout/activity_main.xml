@@ -19,6 +19,7 @@
         android:paddingBottom="8dp"
         android:textColor="#000000" />
 
+    <!-- FrameLayout to create border around the map -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -33,4 +34,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </FrameLayout>
+
+    <!-- TextView to display Student ID -->
+    <TextView
+        android:id="@+id/studentIdText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Student ID: | Speed: "
+        android:textSize="16sp"
+        android:paddingTop="8dp"
+        android:textColor="#000000" />
+
 </LinearLayout>
