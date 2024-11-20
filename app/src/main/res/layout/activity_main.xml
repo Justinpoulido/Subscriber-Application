@@ -35,14 +35,36 @@
             android:layout_height="match_parent" />
     </FrameLayout>
 
-    <!-- TextView to display Student ID -->
+    <!-- TextView to display Student ID and other related data -->
     <TextView
         android:id="@+id/studentIdText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Student ID: | Speed: "
-        android:textSize="16sp"
+        android:layout_height="66dp"
         android:paddingTop="8dp"
-        android:textColor="#000000" />
+        android:text="Student ID: | Min Speed: 0.0 km/h | Max Speed: 0.0 km/h "
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/viewMoreButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View More"
+        android:padding="8dp"/>
+
+    <!-- Hidden TextView for Summary -->
+    <TextView
+        android:id="@+id/summaryTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/white"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:gravity="center" />
 
 </LinearLayout>
+
+
