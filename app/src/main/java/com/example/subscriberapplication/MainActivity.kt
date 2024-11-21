@@ -175,22 +175,41 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val minSpeed = speeds.minOrNull() ?: 0.0
         val averageSpeed = if (speeds.isNotEmpty()) speeds.average() else 0.0
 
-        // Get the latest student ID
-        val latestStudentId = allData.last().studentId
+        // Get the latest student ID and current location
+        val latestLocationData = allData.last()
+        val latestStudentId = latestLocationData.studentId
+        val latitude = latestLocationData.latitude
+        val longitude = latestLocationData.longitude
+        val currentLocation = LatLng(latitude, longitude)
 
         // Create summary text
         val summaryText = """
         Summary of $latestStudentId
-        
+
         Max Speed: ${"%.2f".format(maxSpeed)} km/h
         Min Speed: ${"%.2f".format(minSpeed)} km/h
         Average Speed: ${"%.2f".format(averageSpeed)} km/h
     """.trimIndent()
 
-        // Launch SummaryActivity with the summary data
-        val intent = Intent(this, SummaryActivity::class.java)
-        intent.putExtra("summary_text", summaryText)
-        startActivity(intent)
+        // Display the summary
+        summaryTextView.text = summaryText
+
+        // If mMap is initialized, add a marker for the student's current location
+        if (::mMap.isInitialized) {
+            // Clear the previous markers and paths
+            mMap.clear()
+
+            // Add a marker at the student's current location
+            mMap.addMarker(
+                MarkerOptions().position(currentLocation).title("Current Location of $latestStudentId")
+            )
+
+            // Move the camera to the student's current location
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15f))
+        }
+
+        // Make summary view visible
+        summaryTextView.visibility = View.VISIBLE
     }
 
 
